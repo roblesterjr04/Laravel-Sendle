@@ -5,6 +5,7 @@ namespace Lester\Sendle\Models;
 use Illuminate\Database\Eloquent\Concerns\HasAttributes;
 use Lester\Sendle\Facades\Sendle;
 use Lester\Sendle\Contracts\SendleContract;
+use Lester\Sendle\Exceptions\MissingRequiredFields;
 
 abstract class SendleModel implements SendleContract
 {
@@ -12,6 +13,7 @@ abstract class SendleModel implements SendleContract
 	use HasAttributes;
 	
 	protected $required = [];
+	protected $exists;
 	
 	public function __construct($data = [])
 	{
@@ -78,7 +80,7 @@ abstract class SendleModel implements SendleContract
 		}
 		
 		if (count($missing)) {
-			throw new \Exception('missing required data');
+			throw new MissingRequiredFields(implode(', ', $missing) . ' are required');
 		}
 		
 		return $this;

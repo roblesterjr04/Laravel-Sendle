@@ -6,7 +6,10 @@ class Order extends SendleModel
 {
 	
 	protected $required = [
-		
+		'sender' => Entity::class,
+		'receiver' => Entity::class,
+		'description' => 'string',
+		'weight' => 'string',
 	];
 	
 	public function endpoint()

@@ -55,7 +55,7 @@ class Sendle
 	
 	public function create(SendleContract $model, $attributes = [])
 	{
-		$response = $this->send($model->endpoint(), 'post', $attributes ?? $model->toArray());
+		$response = $this->send($model->validate()->endpoint(), 'post', $attributes ?? $model->toArray());
 		
 		if ($response->created()) {
 			return $model->fill($response->json());

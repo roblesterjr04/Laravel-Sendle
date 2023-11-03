@@ -11,6 +11,8 @@ abstract class SendleModel implements SendleContract
 	
 	use HasAttributes;
 	
+	protected $required = [];
+	
 	public function __construct($data = [])
 	{
 		$this->fill($data);
@@ -65,6 +67,21 @@ abstract class SendleModel implements SendleContract
 		$instance = new static();
 		
 		return $instance->$name(...$arguments);
+	}
+	
+	public function validate()
+	{
+		$missing = [];
+		
+		foreach ($this->required as $key => $type) {
+			if ($this->$key === null) $missing[] = $key;
+		}
+		
+		if (count($missing)) {
+			throw new \Exception('missing required data');
+		}
+		
+		return $this;
 	}
 	
 }

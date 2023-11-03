@@ -136,6 +136,8 @@ class SendleOrderTest extends TestCase
 		Http::assertSent(function(Request $request, Response $response) {
 			return Str::of($request->url())->contains('order_12345') && $response->notFound();
 		});
+		
+		$this->assertInstanceOf(Order::class, $orderFound);
 	}
 	
 }

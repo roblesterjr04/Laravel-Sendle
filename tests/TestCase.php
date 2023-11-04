@@ -1,6 +1,6 @@
 <?php
 
-namespace Lester\Sendle\Tests;
+namespace Sendle\Tests;
 
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Http\Client\Request;

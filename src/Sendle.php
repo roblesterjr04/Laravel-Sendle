@@ -1,10 +1,10 @@
 <?php
 
-namespace Lester\Sendle;
+namespace Sendle;
 
 use Http;
-use Lester\Sendle\Contracts\SendleContract;
-use Lester\Sendle\Exceptions\InvalidRequest;
+use Sendle\Contracts\SendleContract;
+use Sendle\Exceptions\InvalidRequest;
 use Illuminate\Http\Client\Response;
 use Exception;
 
@@ -53,9 +53,12 @@ class Sendle
 		$this->handleExceptions($response);
 	}
 	
-	public function create(SendleContract $model, $attributes = [])
+	public function create(SendleContract $model, $attributes = null)
 	{
-		$response = $this->send($model->validate()->endpoint(), 'post', $attributes ?? $model->toArray());
+		if ($attributes !== null) {
+			$model->fill($attributes);
+		}
+		$response = $this->send($model->validate()->endpoint(), 'post', $model->toArray());
 		
 		if ($response->created()) {
 			return $model->fill($response->json());

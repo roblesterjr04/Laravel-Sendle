@@ -1,6 +1,6 @@
 <?php
 
-namespace Lester\Sendle\Tests;
+namespace Sendle\Tests;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;

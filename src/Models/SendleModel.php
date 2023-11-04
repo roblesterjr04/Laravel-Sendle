@@ -1,11 +1,11 @@
 <?php
 
-namespace Lester\Sendle\Models;
+namespace Sendle\Models;
 
 use Illuminate\Database\Eloquent\Concerns\HasAttributes;
-use Lester\Sendle\Facades\Sendle;
-use Lester\Sendle\Contracts\SendleContract;
-use Lester\Sendle\Exceptions\MissingRequiredFields;
+use Sendle\Facades\Sendle;
+use Sendle\Contracts\SendleContract;
+use Sendle\Exceptions\MissingRequiredFields;
 
 abstract class SendleModel implements SendleContract
 {
@@ -77,6 +77,9 @@ abstract class SendleModel implements SendleContract
 		
 		foreach ($this->required as $key => $type) {
 			if ($this->$key === null) $missing[] = $key;
+			if (!($this->$key instanceof $type || gettype($this->$key) == $type)) {
+				$missing[] = $key;
+			}
 		}
 		
 		if (count($missing)) {

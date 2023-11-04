@@ -7,7 +7,7 @@ return [
 	 */
 	 
 	'providers' => [
-		Lester\Sendle\ServiceProvider::class,
+		Sendle\ServiceProvider::class,
 	],
 	
 	'aliases' => [

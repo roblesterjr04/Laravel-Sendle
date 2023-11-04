@@ -1,16 +1,16 @@
 <?php
 
-namespace Lester\Sendle\Tests;
+namespace Sendle\Tests;
 
-use Lester\Sendle\Facades\Sendle;
+use Sendle\Facades\Sendle;
 use Illuminate\Http\Client\Request;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Str;
 use Http;
 use Exception;
-use Lester\Sendle\Models\Order;
-use Lester\Sendle\Exceptions\InvalidRequest;
-use Lester\Sendle\Exceptions\RepeatRequest;
+use Sendle\Models\Order;
+use Sendle\Exceptions\InvalidRequest;
+use Sendle\Exceptions\RepeatRequest;
 
 class SendleOrderTest extends TestCase
 {
@@ -23,7 +23,7 @@ class SendleOrderTest extends TestCase
 	}
 	
 	public function test_orders_can_be_found()
-	{
+	{	
 		$this->expectException(Exception::class);
 			
 		Http::fake([
@@ -72,23 +72,15 @@ class SendleOrderTest extends TestCase
 				], 425),
 		]);
 			
-		$orderSuccess = Order::create([
-			'details' => 'details'
-		]);
+		$orderSuccess = Order::create(FakeHttpPayloads::newOrderPayload());	
 		
 		$this->expectException(InvalidRequest::class);
-		$orderFailure = Order::create([
-			'details' => 'details'
-		]);
+		$orderFailure = Order::create(FakeHttpPayloads::newOrderPayload());
 		
-		$orderServerFail = Order::create([
-			'details' => 'details'
-		]);
+		$orderServerFail = Order::create(FakeHttpPayloads::newOrderPayload());
 		
 		$this->expectException(RepeatRequest::class);
-		$orderRepeat = Order::create([
-			'details' => 'details'
-		]);
+		$orderRepeat = Order::create(FakeHttpPayloads::newOrderPayload());
 		
 		$this->commonClientAssertions();
 		

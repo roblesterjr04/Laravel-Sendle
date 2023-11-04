@@ -1,6 +1,6 @@
 <?php
 
-namespace Lester\Sendle\Contracts;
+namespace Sendle\Contracts;
 
 interface SendleContract
 {

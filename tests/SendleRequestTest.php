@@ -1,8 +1,8 @@
 <?php
 
-namespace Lester\Sendle\Tests;
+namespace Sendle\Tests;
 
-use Lester\Sendle\Facades\Sendle;
+use Sendle\Facades\Sendle;
 use Illuminate\Http\Client\Request;
 use Illuminate\Support\Str;
 use Http;

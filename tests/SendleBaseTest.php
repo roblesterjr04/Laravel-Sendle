@@ -1,11 +1,12 @@
 <?php
 
-namespace Lester\Sendle\Tests;
+namespace Sendle\Tests;
 
-use Lester\Sendle\Facades\Sendle;
+use Sendle\Facades\Sendle;
 use Illuminate\Http\Client\Request;
 use Illuminate\Support\Str;
 use Http;
+use Sendle\Models\Entity;
 
 class SendleBaseTest extends TestCase
 {
@@ -24,6 +25,13 @@ class SendleBaseTest extends TestCase
 		Http::assertSent(function (Request $request) {
 			return Str::of($request->url())->contains('test');
 		});
+	}
+	
+	public function test_model_attributes()
+	{
+		$model = new Entity();
+		
+		$this->assertEquals('N/A', $model->instructions);
 	}
 	
 }

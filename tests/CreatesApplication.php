@@ -1,6 +1,6 @@
 <?php
 
-namespace Lester\Sendle\Tests;
+namespace Sendle\Tests;
 
 use Illuminate\Contracts\Console\Kernel;
 
@@ -19,7 +19,7 @@ trait CreatesApplication
 
 		$app->singleton(
 			Kernel::class,
-			\Lester\Sendle\Tests\Kernel::class
+			\Sendle\Tests\Kernel::class
 		);
 
 		$app->make(Kernel::class)->bootstrap();

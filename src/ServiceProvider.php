@@ -1,8 +1,8 @@
 <?php
 
-namespace Lester\Sendle;
+namespace Sendle;
 
-use Lester\Sendle\Facades\Sendle as SendleFacade;
+use Sendle\Facades\Sendle as SendleFacade;
 
 class ServiceProvider extends \Illuminate\Support\ServiceProvider
 {

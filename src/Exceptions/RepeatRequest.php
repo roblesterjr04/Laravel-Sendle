@@ -1,6 +1,6 @@
 <?php
 
-namespace Lester\Sendle\Exceptions;
+namespace Sendle\Exceptions;
 
 use Exception;
 

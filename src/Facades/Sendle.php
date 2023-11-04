@@ -1,6 +1,6 @@
 <?php
 
-namespace Lester\Sendle\Facades;
+namespace Sendle\Facades;
 
 use Illuminate\Support\Facades\Facade;
 

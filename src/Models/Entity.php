@@ -21,11 +21,13 @@ class Entity extends SendleModel
 	
 	public function setContactAttribute($input)
 	{
-		$this->attributes['contact'] = (new Contact($input))->validate();
+		if (is_array($input)) $input = new Contact($input);
+		$this->attributes['contact'] = $input->validate();
 	}
 	
 	public function setAddressAttribute($input)
 	{
-		$this->attributes['address'] = (new Address($input))->validate();
+		if (is_array($input)) $input = new Address($input);
+		$this->attributes['address'] = $input->validate();
 	}
 }

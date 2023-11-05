@@ -28,6 +28,14 @@ class FakeHttpPayloads
 		];
 	}
 	
+	public static function entity()
+	{
+		return [
+			'contact' => self::contact(),
+			'address' => self::address(),
+		];
+	}
+	
 	public static function newOrderPayload()
 	{
 		return [

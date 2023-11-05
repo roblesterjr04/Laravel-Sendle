@@ -8,10 +8,12 @@ return [
 	 
 	'providers' => [
 		Sendle\ServiceProvider::class,
+		Illuminate\Filesystem\FilesystemServiceProvider::class,
 	],
 	
 	'aliases' => [
 		'Http' => Illuminate\Support\Facades\Http::class,
+		'Storage' => Illuminate\Support\Facades\Storage::class,
 	],
 	
 ];

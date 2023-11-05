@@ -37,12 +37,18 @@ class SendleBaseTest extends TestCase
 	
 	public function test_eloquent_model()
 	{
+		$id = fake()->randomNumber();
+		$ts = now();
+		
 		$model = new TestModel([
-			'updated_at' => now(),
-			'id' => fake()->randomNumber(),
+			'updated_at' => $ts,
+			'id' => $id,
 		]);
+		
+		$hash = md5("$id.$ts");
 				
 		$this->assertInstanceOf(TestModel::class, $model);
+		$this->assertEquals($hash, $model->orderHash());
 	}
 	
 }

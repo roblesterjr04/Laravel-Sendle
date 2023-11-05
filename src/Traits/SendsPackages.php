@@ -5,6 +5,7 @@ namespace Sendle\Traits;
 use Sendle\Models\Order;
 use Sendle\Models\Entity;
 use Storage;
+use Http;
 
 trait SendsPackages
 {
@@ -13,8 +14,8 @@ trait SendsPackages
 	{
 		$order = new Order([
 			'idempotency_key' => $this->orderHash(),
-			'sender' => $sender?->toArray() ?? config('sendle.default_sender'),
-			'receiver' => $receiver?->toArray() ?? $this->sendleReceiver(),
+			'sender' => $sender ?? config('sendle.default_sender_entity'),
+			'receiver' => $receiver ?? $this->sendleReceiver(),
 			'description' => $description,
 			'weight' => [
 				'value' => $weight,
@@ -59,14 +60,48 @@ trait SendsPackages
 		]))->validate();
 	}
 	
-	public function labelUrl($orderId = null)
+	public function labelPath($orderId = null, $size = 'cropped')
 	{
 		$order = $this->sendleOrderFind($orderId);
 		
+		if ($order === null) return null;
+		
+		$filename = "{$order->order_id}_{$size}.pdf";
+		
+		if (config('sendle.save_labels')) return Storage::disk(config('sendle.label_disk'))->path($filename);
+		
+		foreach ($order->labels as $label) {
+			if ($label->size == $size) return $label->url;
+		}
+		
+		return null;
 	}
 	
-	public function labelDownload()
+	public function labelUrl($orderId = null, $size = 'cropped', $method = 'url')
 	{
+		$order = $this->sendleOrderFind($orderId);
+		
+		if ($order === null) return null;
+		
+		$filename = "{$order->order_id}_{$size}.pdf";
+		
+		if (config('sendle.save_labels')) return Storage::disk(config('sendle.label_disk'))->$method($filename);
+		
+		foreach ($order->labels as $label) {
+			if ($label->size == $size) return $label->url;
+		}
+		
+		return null;
+	}
+	
+	public function labelDownload($orderId = null, $size = 'cropped')
+	{
+		
+		$labelPath = $this->labelPath($orderId, $size);
+		
+		if ($labelPath === null) return null;
+		
+		if (config('sendle.save_labels')) return Storage::disk(config('sendle.label_disk'))->download($labelPath);
 		
 	}
 	
@@ -81,16 +116,23 @@ trait SendsPackages
 	private function sendleSaveLabel(Order $order)
 	{
 		foreach ($order->labels as $label) {
-			$stream = fopen($label->url, 'r');
+			$stream = Http::withOptions([
+					'stream' => true
+			])->get($label->url)->toPsrResponse()->getBody();
+			
 			$filename = "{$order->order_id}_{$label->size}.{$label->format}";
 			Storage::disk(config('sendle.label_disk'))->put($filename, $stream);
 			$label->path = Storage::path($filename);
 		}
 	}
 	
-	private function orderHash()
+	public function orderHash()
 	{
-		return md5(implode('.', $this->orderHashFields()));
+		$hashFieldValues = [];
+		foreach ($this->orderHashFields() as $key) {
+			$hashFieldValues[$key] = $this->$key;
+		}
+		return md5(implode('.', $hashFieldValues));
 	}
 	
 }

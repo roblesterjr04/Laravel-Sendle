@@ -19,12 +19,21 @@ class Order extends SendleModel
 	
 	public function setSenderAttribute($input)
 	{
-		$this->attributes['sender'] = (new Entity($input))->validate();
+		if (is_array($input)) $input = new Entity($input);
+		$this->attributes['sender'] = $input->validate();
 	}
 	
 	public function setReceiverAttribute($input)
 	{
-		$this->attributes['receiver'] = (new Entity($input))->validate();
+		if (is_array($input)) $input = new Entity($input);
+		$this->attributes['receiver'] = $input->validate();
+	}
+	
+	public function setLabelsAttribute($labels)
+	{
+		$this->attributes['labels'] = array_map(function($label) {
+			return (object)$label;
+		}, $labels);
 	}
 	
 }

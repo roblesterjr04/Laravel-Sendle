@@ -7,8 +7,10 @@ use Illuminate\Http\Client\Request;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Str;
 use Http;
+use Storage;
 use Exception;
 use Sendle\Models\Order;
+use Sendle\Models\Entity;
 use Sendle\Exceptions\InvalidRequest;
 use Sendle\Exceptions\RepeatRequest;
 
@@ -130,6 +132,41 @@ class SendleOrderTest extends TestCase
 		});
 		
 		$this->assertInstanceOf(Order::class, $orderFound);
+	}
+	
+	public function test_order_created_from_model()
+	{
+		Storage::fake('local');
+		Http::fake([
+			'api/orders' => Http::response([
+				'sendle_reference' => 'ref_number',
+				'labels' => [
+					[
+						'format' => 'pdf',
+						'size' => 'a4',
+						'url' => 'https://api.sendle.com/api/orders/f5233746-71d4-4b05-bf63-56f4abaed5f6/labels/a4.pdf',
+					],
+					[
+						'format' => 'pdf',
+						'size' => 'cropped',
+						'url' => 'https://api.sendle.com/api/orders/f5233746-71d4-4b05-bf63-56f4abaed5f6/labels/cropped.pdf',
+					]
+				]
+			], 201),
+			'api/orders/*' => Http::response(fopen('php://temp','r'), 200),
+		]);
+			
+		$id = fake()->randomNumber();
+		$ts = now();
+		
+		$model = new TestModel([
+			'updated_at' => $ts,
+			'id' => $id,
+		]);
+		
+		$receiverEntity = new Entity(FakeHttpPayloads::entity());
+					
+		$model->sendleOrderCreate("Test order create", 12, $receiverEntity);
 	}
 	
 }

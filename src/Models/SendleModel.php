@@ -20,6 +20,11 @@ abstract class SendleModel implements SendleContract
 		$this->fill($data);
 	}
 	
+	public function __serialize()
+	{
+		return $this->toArray();
+	}
+	
 	public function fill(array $attributes)
 	{
 		foreach ($attributes as $key => $value) {

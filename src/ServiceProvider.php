@@ -28,7 +28,5 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
 			return new Sendle();
 		});
 	
-		$loader = \Illuminate\Foundation\AliasLoader::getInstance();
-		$loader->alias('Sendle', SendleFacade::class);
 	}
 }

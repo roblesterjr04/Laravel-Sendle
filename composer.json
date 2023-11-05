@@ -47,7 +47,10 @@
 	"laravel": {
 	  "providers": [
 		"Sendle\\ServiceProvider"
-	  ]
+	  ],
+	  "aliases": {
+		"Sendle": "Sendle\\Facades\\Sendle"
+	  }
 	}
   },
   "config": {

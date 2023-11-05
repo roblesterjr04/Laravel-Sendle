@@ -77,13 +77,24 @@ trait SendsPackages
 		return null;
 	}
 	
-	public function labelUrl($orderId = null, $size = 'cropped', $method = 'url')
+	public function labelFileName($orderId = null, $size = 'cropped')
 	{
 		$order = $this->sendleOrderFind($orderId);
 		
 		if ($order === null) return null;
 		
 		$filename = "{$order->order_id}_{$size}.pdf";
+		
+		return $filename;
+	}
+	
+	public function labelUrl($orderId = null, $size = 'cropped', $method = 'url')
+	{
+		$order = $this->sendleOrderFind($orderId);
+		
+		if ($order === null) return null;
+		
+		$filename = $this->labelFileName($orderId, $size);
 		
 		if (config('sendle.save_labels')) return Storage::disk(config('sendle.label_disk'))->$method($filename);
 		
@@ -118,12 +129,15 @@ trait SendsPackages
 		foreach ($order->labels as $label) {
 			$stream = Http::withOptions([
 					'stream' => true
-			])->get($label->url)->toPsrResponse()->getBody();
-			
-			$filename = "{$order->order_id}_{$label->size}.{$label->format}";
+			])->get($label->url)->body();
+																					
+			$filename = "{$order->order_id}_{$label->size}.pdf";
 			Storage::disk(config('sendle.label_disk'))->put($filename, $stream);
+			
+			
 			$label->path = Storage::path($filename);
 		}
+		
 	}
 	
 	public function orderHash()

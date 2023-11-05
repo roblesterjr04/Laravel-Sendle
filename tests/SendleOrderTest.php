@@ -137,23 +137,32 @@ class SendleOrderTest extends TestCase
 	public function test_order_created_from_model()
 	{
 		Storage::fake('local');
-		Http::fake([
-			'api/orders' => Http::response([
-				'sendle_reference' => 'ref_number',
-				'labels' => [
-					[
-						'format' => 'pdf',
-						'size' => 'a4',
-						'url' => 'https://api.sendle.com/api/orders/f5233746-71d4-4b05-bf63-56f4abaed5f6/labels/a4.pdf',
-					],
-					[
-						'format' => 'pdf',
-						'size' => 'cropped',
-						'url' => 'https://api.sendle.com/api/orders/f5233746-71d4-4b05-bf63-56f4abaed5f6/labels/cropped.pdf',
-					]
+		
+		$stream = fopen('php://temp','r+');
+
+		fwrite($stream, 'testing');
+		
+		$response = [
+			'sendle_reference' => 'ref_number',
+			'order_id' => 'test12345',
+			'labels' => [
+				[
+					'format' => 'pdf',
+					'size' => 'a4',
+					'url' => 'https://api.sendle.com/api/orders/test12345/labels/a4.pdf',
+				],
+				[
+					'format' => 'pdf',
+					'size' => 'cropped',
+					'url' => 'https://api.sendle.com/api/orders/test12345/labels/cropped.pdf',
 				]
-			], 201),
-			'api/orders/*' => Http::response(fopen('php://temp','r'), 200),
+			]
+		];
+		
+		Http::fake([
+			'api/orders' => Http::response($response, 201),
+			'api/orders/test12345' => Http::response($response, 200),
+			'api/orders/test12345/labels/*' => Http::response($stream, 200),
 		]);
 			
 		$id = fake()->randomNumber();
@@ -166,7 +175,9 @@ class SendleOrderTest extends TestCase
 		
 		$receiverEntity = new Entity(FakeHttpPayloads::entity());
 					
-		$model->sendleOrderCreate("Test order create", 12, $receiverEntity);
+		$order = $model->sendleOrderCreate("Test order create", 12, $receiverEntity);
+				
+		Storage::disk('local')->assertExists($model->labelFileName($order->order_id));
 	}
 	
 }

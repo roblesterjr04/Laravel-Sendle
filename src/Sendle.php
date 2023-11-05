@@ -75,7 +75,7 @@ class Sendle
 		$response = $this->send($model->endpoint() . "/$id");
 		
 		if ($response->ok()) {
-			return $model->fill($response->json());
+			return $model->fill($response->json() ?? []);
 		}
 		
 		$this->handleExceptions($response);

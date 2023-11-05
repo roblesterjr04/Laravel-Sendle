@@ -7,6 +7,7 @@ use Illuminate\Http\Client\Request;
 use Illuminate\Support\Str;
 use Http;
 use Sendle\Models\Entity;
+use Sendle\Tests\TestModel;
 
 class SendleBaseTest extends TestCase
 {
@@ -32,6 +33,16 @@ class SendleBaseTest extends TestCase
 		$model = new Entity();
 		
 		$this->assertEquals('N/A', $model->instructions);
+	}
+	
+	public function test_eloquent_model()
+	{
+		$model = new TestModel([
+			'updated_at' => now(),
+			'id' => fake()->randomNumber(),
+		]);
+				
+		$this->assertInstanceOf(TestModel::class, $model);
 	}
 	
 }

@@ -6,7 +6,7 @@ use Sendle\Models\Order;
 use Sendle\Models\Entity;
 use Storage;
 
-trait CreatesLabels
+trait SendsPackages
 {
 	
 	public function sendleOrderCreate($description, $weight, Entity $receiver = null, Entity $sender = null)
@@ -29,9 +29,14 @@ trait CreatesLabels
 		return $order;
 	}
 	
+	public function sendleOrderFind($orderId = null)
+	{
+		return Order::find($orderId ?? $this->sendle_order_id);
+	}
+	
 	public function sendleOrderDelete($orderId = null)
 	{
-		return Order::find($orderId ?? $this->sendle_order_id)->delete();
+		return $this->sendleOrderFind($orderId)->delete();
 	}
 	
 	public function sendleReceiver()
@@ -54,8 +59,9 @@ trait CreatesLabels
 		]))->validate();
 	}
 	
-	public function labelUrl()
+	public function labelUrl($orderId = null)
 	{
+		$order = $this->sendleOrderFind($orderId);
 		
 	}
 	

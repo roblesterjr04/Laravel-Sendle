@@ -2,9 +2,22 @@
 
 namespace Sendle\Tests;
 
-use Illuminate\Database\Eloquent\Model;
+use Sendle\Traits\SendsPackages;
 
-class TestModel extends Model
+class TestModel
 {
+	use SendsPackages;
+		
+	public function __construct($attributes = [])
+	{
+		foreach ($attributes as $key => $attr) {
+			$this->$key = $attr;
+		}
+	}
 	
+	public function __get($key)
+	{
+		if (property_exists($this, $key)) return $this->$key;
+		return null;
+	}
 }

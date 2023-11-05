@@ -20,7 +20,7 @@ abstract class SendleModel implements SendleContract
 		$this->fill($data);
 	}
 	
-	public function __serialize()
+	public function __debugInfo()
 	{
 		return $this->toArray();
 	}

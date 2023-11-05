@@ -58,7 +58,9 @@ class Sendle
 		if ($attributes !== null) {
 			$model->fill($attributes);
 		}
-		$response = $this->send($model->validate()->endpoint(), 'post', $model->toArray());
+		$response = $this->send($model->validate()->endpoint(), 'post', $model->toArray(), [
+			'Idempotency-Key' => $model->idempotecy_key,
+		]);
 		
 		if ($response->created()) {
 			return $model->fill($response->json());

@@ -7,6 +7,12 @@ use Sendle\Traits\SendsPackages;
 class TestModel
 {
 	use SendsPackages;
+	
+	protected $sendleAddressMap = [
+		'address_line1' => 'street_address',
+		'suburb' => 'city',
+		'state_name' => 'state',
+	];
 		
 	public function __construct($attributes = [])
 	{

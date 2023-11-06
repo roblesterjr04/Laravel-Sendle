@@ -10,6 +10,11 @@ use Http;
 
 trait SendsPackages
 {
+	protected $sendleAddressMap = [
+		'suburb' => 'city',
+		'state_name' => 'state',
+	];
+	
 	public function sendleProducts(float $weight, Entity $receiver = null, Entity $sender = null)
 	{
 		return Product::get($weight, $receiver ?? $this->sendleReceiver(), $sender);
@@ -144,6 +149,9 @@ trait SendsPackages
 		return md5(implode('.', $hashFieldValues));
 	}
 	
-	
+	public function getAddressLine1Attribute()
+	{
+		
+	}
 	
 }

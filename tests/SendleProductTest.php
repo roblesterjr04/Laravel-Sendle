@@ -41,4 +41,30 @@ class SendleProductTest extends TestCase
 			return $response->ok() && count($response->json());
 		});
 	}
+	
+	public function test_model_can_get_products()
+	{
+		Http::fake([
+			'api/products?*' => Http::response([
+				FakeHttpPayloads::product()
+			], 200),
+		]);
+		
+		$receiver = new Entity(FakeHttpPayloads::entity());
+		
+		$id = fake()->randomNumber();
+		$ts = now();
+		$model = new TestModel([
+			'updated_at' => $ts,
+			'id' => $id,
+		]);
+		
+		$products = $model->sendleProducts(12, $receiver);
+		
+		$this->commonClientAssertions();
+		
+		Http::assertSent(function(Request $request, Response $response) {
+			return $response->ok() && count($response->json());
+		});
+	}
 }

@@ -3,12 +3,17 @@
 namespace Sendle\Traits;
 
 use Sendle\Models\Order;
+use Sendle\Models\Product;
 use Sendle\Models\Entity;
 use Storage;
 use Http;
 
 trait SendsPackages
 {
+	public function sendleProducts(float $weight, Entity $receiver = null, Entity $sender = null)
+	{
+		return Product::get($weight, $receiver ?? $this->sendleReceiver(), $sender);
+	}
 	
 	public function sendleOrderCreate(string $description, float $weight, Entity $receiver = null, Entity $sender = null, Product $product = null)
 	{
@@ -138,5 +143,7 @@ trait SendsPackages
 		}
 		return md5(implode('.', $hashFieldValues));
 	}
+	
+	
 	
 }

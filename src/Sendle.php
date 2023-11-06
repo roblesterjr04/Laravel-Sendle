@@ -69,6 +69,18 @@ class Sendle
 		$this->handleExceptions($response);
 	}
 	
+	public function return(Order $order, $id = null, $attributes = [], $headers = [])
+	{
+		$id = $id ?? $model->id;
+		$response = $this->send("orders/$id/return", 'post', $attributes, $headers);
+		
+		if ($response->created() || $response->ok()) {
+			return $model->fill($response->json());
+		}
+		
+		$this->handleExceptions($response);
+	}
+	
 	public function find(SendleContract $model, $id = null)
 	{
 		$id = $id ?? $model->id;

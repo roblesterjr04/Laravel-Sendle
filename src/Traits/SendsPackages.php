@@ -127,18 +127,7 @@ trait SendsPackages
 	
 	private function sendleSaveLabel(Order $order)
 	{
-		foreach ($order->labels as $label) {
-			$stream = Http::withOptions([
-					'stream' => true
-			])->get($label->url)->body();
-																					
-			$filename = "{$order->order_id}_{$label->size}.pdf";
-			Storage::disk(config('sendle.label_disk'))->put($filename, $stream);
-			
-			
-			$label->path = Storage::path($filename);
-		}
-		
+		$order->saveLabel();
 	}
 	
 	public function orderHash()

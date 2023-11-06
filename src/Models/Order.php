@@ -2,6 +2,9 @@
 
 namespace Sendle\Models;
 
+use Http;
+use Storage;
+
 class Order extends SendleModel
 {
 	
@@ -38,6 +41,20 @@ class Order extends SendleModel
 		$this->attributes['labels'] = array_map(function($label) {
 			return (object)$label;
 		}, $labels);
+	}
+	
+	public function saveLabel()
+	{
+		foreach ($this->labels as $label) {
+			$stream = Http::withOptions([
+					'stream' => true
+			])->get($label->url)->body();
+																					
+			$filename = "{$this->order_id}_{$label->size}.pdf";
+			Storage::disk(config('sendle.label_disk'))->put($filename, $stream);
+			
+			$label->path = Storage::path($filename);
+		}
 	}
 	
 }

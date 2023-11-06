@@ -10,13 +10,14 @@ use Http;
 trait SendsPackages
 {
 	
-	public function sendleOrderCreate($description, $weight, Entity $receiver = null, Entity $sender = null)
+	public function sendleOrderCreate(string $description, float $weight, Entity $receiver = null, Entity $sender = null, Product $product = null)
 	{
 		$order = new Order([
 			'idempotency_key' => $this->orderHash(),
 			'sender' => $sender ?? config('sendle.default_sender_entity'),
 			'receiver' => $receiver ?? $this->sendleReceiver(),
 			'description' => $description,
+			'product_code' => $product?->product?->code,
 			'weight' => [
 				'value' => $weight,
 				'units' => config('sendle.units', 'oz'),

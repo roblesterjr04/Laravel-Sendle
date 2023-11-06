@@ -5,6 +5,10 @@ namespace Sendle\Models;
 class Order extends SendleModel
 {
 	
+	public const UNITS = [
+		'kg', 'lb', 'g', 'oz'
+	];
+	
 	protected $required = [
 		'sender' => Entity::class,
 		'receiver' => Entity::class,

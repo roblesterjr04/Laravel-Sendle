@@ -40,9 +40,9 @@ class Sendle
 		return $this->request->withHeaders($headers)->$method($endpoint, $body);
 	}
 	
-	public function get(SendleContract $model)
+	public function get(SendleContract $model, $attributes = null)
 	{
-		$response = $this->send($model->endpoint());
+		$response = $this->send($model->endpoint(), 'get', $attributes);
 		
 		if ($response->ok()) {
 			return collect($response->json())->map(function($object) use ($model) {

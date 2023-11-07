@@ -130,6 +130,17 @@ $user = User::find(4);
 
 $user->sendleOrderCreate('grandmas china', 36.0);
 
+//.........//
+
+$reciever = new Entity([
+	'contact' => [ /** */],
+	'address' => [
+		/**  */
+	],
+]);
+
+$user->sendleOrderCreate('grandmas china', 42, $receiver);
+
 ```
 	
 

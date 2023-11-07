@@ -3,8 +3,9 @@
 namespace Sendle\Models;
 
 use Sendle\Facades\Sendle;
+use Sendle\Contracts\SendleContract;
 
-class Product extends SendleModel
+class Product extends SendleModel implements SendleContract
 {
 	
 	public function endpoint()

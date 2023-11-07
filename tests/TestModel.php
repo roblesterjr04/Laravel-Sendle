@@ -3,8 +3,9 @@
 namespace Sendle\Tests;
 
 use Sendle\Traits\SendsPackages;
+use Sendle\Models\SendleModel;
 
-class TestModel
+class TestModel extends SendleModel
 {
 	use SendsPackages;
 	
@@ -13,17 +14,5 @@ class TestModel
 		'suburb' => 'city',
 		'state_name' => 'state',
 	];
-		
-	public function __construct($attributes = [])
-	{
-		foreach ($attributes as $key => $attr) {
-			$this->$key = $attr;
-		}
-	}
 	
-	public function __get($key)
-	{
-		if (property_exists($this, $key)) return $this->$key;
-		return null;
-	}
 }

@@ -2,7 +2,9 @@
 
 namespace Sendle\Models;
 
-class Address extends SendleModel
+use Sendle\Contracts\SendleContract;
+
+class Address extends SendleModel implements SendleContract
 {
 	
 	protected $required = [

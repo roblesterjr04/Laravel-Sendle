@@ -7,7 +7,7 @@ use Sendle\Facades\Sendle;
 use Sendle\Contracts\SendleContract;
 use Sendle\Exceptions\MissingRequiredFields;
 
-abstract class SendleModel implements SendleContract
+abstract class SendleModel
 {
 	
 	use HasAttributes;

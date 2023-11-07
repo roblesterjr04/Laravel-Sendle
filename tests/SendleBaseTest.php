@@ -50,5 +50,5 @@ class SendleBaseTest extends TestCase
 		$this->assertInstanceOf(TestModel::class, $model);
 		$this->assertEquals($hash, $model->orderHash());
 	}
-	
+		
 }

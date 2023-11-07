@@ -2,7 +2,9 @@
 
 namespace Sendle\Models;
 
-class Contact extends SendleModel
+use Sendle\Contracts\SendleContract;
+
+class Contact extends SendleModel implements SendleContract
 {
 	protected $required = [
 		'name' => 'string',

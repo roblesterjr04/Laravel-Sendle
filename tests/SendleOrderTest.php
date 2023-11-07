@@ -177,7 +177,47 @@ class SendleOrderTest extends TestCase
 					
 		$order = $model->sendleOrderCreate("Test order create", 12, $receiverEntity);
 				
-		Storage::disk('local')->assertExists($model->labelFileName($order->order_id));
+		Storage::disk('local')->assertExists($order->labelFileName());
+	}
+	
+	public function test_trait_mutator_map_works()
+	{
+		$id = fake()->randomNumber();
+		$ts = now();
+		
+		$model = new TestModel([
+			'updated_at' => $ts,
+			'id' => $id,
+			'city' => 'New York',
+		]);
+				
+		$this->assertEquals($model->suburb, $model->city);
+		$this->assertNull($model->address_line1);
+		
+	}
+	
+	public function test_trait_order_attribute()
+	{
+		$response = [
+			'sendle_reference' => 'ref_number',
+			'order_id' => 'test12345',
+		];
+		
+		Http::fake([
+			'api/orders/test12345' => Http::response($response, 200),
+		]);
+		
+		$id = fake()->randomNumber();
+		$ts = now();
+		
+		$model = new TestModel([
+			'updated_at' => $ts,
+			'id' => $id,
+			'order_id' => 'test12345',
+		]);
+		
+		$this->assertNotNull($model->sendle_order);
+		$this->assertEquals($model->order_id, $model->sendle_order->order_id);
 	}
 	
 }

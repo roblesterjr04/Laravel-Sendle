@@ -4,8 +4,9 @@ namespace Sendle\Models;
 
 use Http;
 use Storage;
+use Sendle\Contracts\SendleContract;
 
-class Order extends SendleModel
+class Order extends SendleModel implements SendleContract
 {
 	
 	public const UNITS = [
@@ -50,11 +51,44 @@ class Order extends SendleModel
 					'stream' => true
 			])->get($label->url)->body();
 																					
-			$filename = "{$this->order_id}_{$label->size}.pdf";
-			Storage::disk(config('sendle.label_disk'))->put($filename, $stream);
+			Storage::disk(config('sendle.label_disk'))->put($this->labelFileName($label->size), $stream);
 			
-			$label->path = Storage::path($filename);
+			$label->path = Storage::path($this->labelFileName($label->size));
 		}
+	}
+	
+	public function getLabel($size = 'cropped')
+	{
+		if (config('sendle.save_labels')) 
+			return Storage::disk(config('sendle.label_disk'))->path($this->labelFileName($size));
+		
+		foreach ($this->labels as $label) {
+			if ($label->size == $size) return $label->url;
+		}
+		
+		return null;
+	}
+	
+	public function labelFileName($size = 'cropped')
+	{
+		return "{$this->order_id}_{$size}.pdf";
+	}
+	
+	public function labelUrl($size = 'cropped', $method = 'url')
+	{
+		if (config('sendle.save_labels')) 
+			return Storage::disk(config('sendle.label_disk'))->$method($this->labelFileName($size));
+		
+		foreach ($this->labels as $label) {
+			if ($label->size == $size) return $label->url;
+		}
+		
+		return null;
+	}
+	
+	public function downloadLabel($size = 'cropped')
+	{
+		if (config('sendle.save_labels')) return Storage::disk(config('sendle.label_disk'))->download($this->getLabel($size));
 	}
 	
 }

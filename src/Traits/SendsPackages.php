@@ -10,11 +10,6 @@ use Http;
 
 trait SendsPackages
 {
-	protected $sendleAddressMap = [
-		'suburb' => 'city',
-		'state_name' => 'state',
-	];
-	
 	public function sendleProducts(float $weight, Entity $receiver = null, Entity $sender = null)
 	{
 		return Product::get($weight, $receiver ?? $this->sendleReceiver(), $sender);
@@ -36,7 +31,7 @@ trait SendsPackages
 		
 		$order->create();
 		
-		if (config('sendle.save_labels')) $this->sendleSaveLabel($order);
+		if (config('sendle.save_labels')) $order->saveLabel();
 		
 		return $order;
 	}
@@ -63,68 +58,12 @@ trait SendsPackages
 			'address' => [
 				'address_line1' => $this->address_line1,
 				'address_line2' => $this->address_line2,
-				'suburb' => $this->city,
+				'suburb' => $this->suburb,
 				'postcode' => $this->postcode,
-				'state_name' => $this->state,
+				'state_name' => $this->state_name,
 				'country' => $this->country ?? 'US'
 			]
 		]))->validate();
-	}
-	
-	public function labelPath($orderId = null, $size = 'cropped')
-	{
-		$order = $this->sendleOrderFind($orderId);
-		
-		if ($order === null) return null;
-		
-		$filename = "{$order->order_id}_{$size}.pdf";
-		
-		if (config('sendle.save_labels')) return Storage::disk(config('sendle.label_disk'))->path($filename);
-		
-		foreach ($order->labels as $label) {
-			if ($label->size == $size) return $label->url;
-		}
-		
-		return null;
-	}
-	
-	public function labelFileName($orderId = null, $size = 'cropped')
-	{
-		$order = $this->sendleOrderFind($orderId);
-		
-		if ($order === null) return null;
-		
-		$filename = "{$order->order_id}_{$size}.pdf";
-		
-		return $filename;
-	}
-	
-	public function labelUrl($orderId = null, $size = 'cropped', $method = 'url')
-	{
-		$order = $this->sendleOrderFind($orderId);
-		
-		if ($order === null) return null;
-		
-		$filename = $this->labelFileName($orderId, $size);
-		
-		if (config('sendle.save_labels')) return Storage::disk(config('sendle.label_disk'))->$method($filename);
-		
-		foreach ($order->labels as $label) {
-			if ($label->size == $size) return $label->url;
-		}
-		
-		return null;
-	}
-	
-	public function labelDownload($orderId = null, $size = 'cropped')
-	{
-		
-		$labelPath = $this->labelPath($orderId, $size);
-		
-		if ($labelPath === null) return null;
-		
-		if (config('sendle.save_labels')) return Storage::disk(config('sendle.label_disk'))->download($labelPath);
-		
 	}
 	
 	public function orderHashFields()
@@ -133,11 +72,6 @@ trait SendsPackages
 			'id',
 			'updated_at',
 		];
-	}
-	
-	private function sendleSaveLabel(Order $order)
-	{
-		$order->saveLabel();
 	}
 	
 	public function orderHash()
@@ -149,9 +83,23 @@ trait SendsPackages
 		return md5(implode('.', $hashFieldValues));
 	}
 	
-	public function getAddressLine1Attribute()
+	protected function sendleAddressFieldMap()
 	{
-		
+		return $this->sendleAddressMap ?? [
+			'suburb' => 'city',
+			'state_name' => 'state',
+		];
+	}
+	
+	public function getAttribute($key)
+	{
+		$mapKeys = $this->sendleAddressFieldMap();
+		return parent::getAttribute($mapKeys[$key] ?? $key);
+	}
+	
+	public function getSendleOrderAttribute()
+	{
+		return Order::find($this->order_id);
 	}
 	
 }

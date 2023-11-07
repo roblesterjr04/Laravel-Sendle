@@ -2,8 +2,6 @@
 
 namespace Sendle\Tests;
 
-use Faker\Factory;
-
 class FakeHttpPayloads
 {	
 	public static function contact()
@@ -134,11 +132,5 @@ class FakeHttpPayloads
 				'units' => 'oz',
 			]
 		];
-	}
-}
-
-if (!function_exists('fake')) {
-	function fake() {
-		return Factory::create();
 	}
 }

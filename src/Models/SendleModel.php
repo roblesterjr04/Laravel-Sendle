@@ -44,6 +44,11 @@ abstract class SendleModel
 		return $this->getAttribute($key);
 	}
 	
+	public function __set($key, $value)
+	{
+		$this->setAttribute($key, $value);
+	}
+	
 	public function relationResolver()
 	{
 		return null;

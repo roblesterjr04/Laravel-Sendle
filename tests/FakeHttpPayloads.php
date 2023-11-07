@@ -116,10 +116,6 @@ class FakeHttpPayloads
 	public static function newOrderPayload()
 	{
 		return [
-			'sender' => [
-				'contact' => self::contact(),
-				'address' => self::address(),
-			],
 			'receiver' => [
 				'contact' => self::contact(),
 				'address' => self::address(),

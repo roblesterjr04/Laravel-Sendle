@@ -58,6 +58,9 @@ class Sendle
 		if ($attributes !== null) {
 			$model->fill($attributes);
 		}
+		if ($model->sender === null) {
+			$model->sender = config('sendle.default_sender_entity');
+		}
 		$response = $this->send($model->validate()->endpoint(), 'post', $model->toArray(), [
 			'Idempotency-Key' => $model->idempotecy_key,
 		]);

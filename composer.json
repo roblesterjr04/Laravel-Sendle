@@ -8,7 +8,12 @@
 	"wrapper",
 	"api",
 	"model",
-	"laravel"
+	"laravel",
+	"usps",
+	"ups",
+	"shipping",
+	"packages",
+	"mail"
   ],
   "type": "library",
   "authors": [

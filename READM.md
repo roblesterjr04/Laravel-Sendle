@@ -1,7 +1,10 @@
-## Introduction
+## Installation
 
+Install via composer
 
-## Official Documentation
+```bash
+composer require rob-lester-jr04/laravel-sendle
+```
 
 
 ## License
